@@ -29,6 +29,8 @@ public class Question implements Serializable {
 
   private Long question_uid;
 
+ // private String q_title;
+
   private String q_content;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
