@@ -3,9 +3,11 @@ package com.qingjiao.qa.controller;
 
 import com.qingjiao.qa.entity.Question;
 import com.qingjiao.qa.service.QuestionService;
+import com.qingjiao.qa.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,24 +20,28 @@ public class QuestionController {
   private QuestionService questionService;
 
   @RequestMapping(value={"/add"},method = RequestMethod.POST)
-  public void addQuestion(@RequestParam("content") String qContent, @RequestParam("tag") String tag) {
+  public void addQuestion(@RequestParam("title") String qTitle,
+                          @RequestParam("content") String qContent,
+                          @RequestParam("category") String category,
+                          @RequestParam("tag") String tag) {
 
-    boolean result = questionService.addQuestion(qContent,tag);
+    boolean result = questionService.addQuestion(qTitle,qContent,category,tag);
     if(result)
-      System.out.println("add questions successfully!!!!!");
+      log.info("add questions successfully!!!!! <3");
     else {
-      System.out.println("add:(");
+      log.error("add:(");
     }
   }
 
 
   @RequestMapping(value={"/update"},method = RequestMethod.POST)
-  public void updateQuestion(@RequestParam("content") String qContent,
+  public void updateQuestion(@RequestParam("title") String qTitle,
+                             @RequestParam("content") String qContent,
                              @RequestParam("qid") Long qid) {
     if(questionService.searchOneQuestion(qid)==null) {
       log.error("question not found :3");
     }
-    boolean result = questionService.updateQuestion(qContent,qid);
+    boolean result = questionService.updateQuestion(qTitle,qContent,qid);
     if(result) {
       log.info("update succ :)");
     } else {
@@ -77,6 +83,16 @@ public class QuestionController {
     } else {
       log.error("list add :(");
       return null;
+    }
+  }
+
+  @RequestMapping(value = {"/upload"}, method = RequestMethod.POST)
+  public void upload(@RequestParam("file") MultipartFile file) {
+    String localPath = "/src/main/resources/images/upload";
+    if(FileUtils.upload(file, localPath,file.getOriginalFilename())) {
+      log.info("upload succ :)");
+    } else {
+      log.error("upload failed :(");
     }
   }
 

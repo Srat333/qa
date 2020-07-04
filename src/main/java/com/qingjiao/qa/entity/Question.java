@@ -3,9 +3,8 @@
  * questionUid: 提问者id
  * qContent: 问题描述
  * createTime: 问题创建时间
- * answerUid: 回答者id
- * aContent: 回答内容
- * answerTime: 回答时间
+ * pid: 图片URL
+ * category: 目录
  * tag: 问题标签
  * price: 价格
  *
@@ -29,19 +28,16 @@ public class Question implements Serializable {
 
   private Long question_uid;
 
- // private String q_title;
+  private String q_title;
 
   private String q_content;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date create_time;
 
-  private Long answer_uid;
+  private String pid;
 
-  private String a_content;
-
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  private Date answer_time;
+  private String category;
 
   private String tag;
 

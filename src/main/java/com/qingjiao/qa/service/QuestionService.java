@@ -2,9 +2,12 @@ package com.qingjiao.qa.service;
 
 import com.qingjiao.qa.dao.QuestionDao;
 import com.qingjiao.qa.entity.Question;
+import com.qingjiao.qa.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,18 +21,26 @@ public class QuestionService {
   @Autowired
   private QuestionDao questionDao;
 
-  public boolean addQuestion(String q_content, String tag) {
+  @Autowired
+  private ResourceLoader resourceLoader;
+
+  public boolean addQuestion(String q_title,String q_content, String category,String tag) {
     if(q_content.equals("") || tag.equals("")) {
       log.error("content empty");
       return false;
     }
-    //questionDao.addQuestion(question);
+
+   // String path = "";
+   // String fileName = pic.getOriginalFilename();
+
 
     Date curDate = new Date();
     Question q = new Question();
    // q.setQid(0L);
     q.setQuestion_uid(111L);
+    q.setQ_title(q_title);
     q.setQ_content(q_content);
+    q.setCategory(category);
     q.setTag(tag);
     q.setPrice(0.99);
     q.setCreate_time(curDate);
@@ -51,12 +62,12 @@ public class QuestionService {
 
   }
 
-  public boolean updateQuestion(String qContent,Long qid) {
-    if(qContent.equals("") || qContent==null || qid<=0) {
+  public boolean updateQuestion(String qTitle, String qContent,Long qid) {
+    if(qContent.equals("")  || qContent==null || qid<=0 || qTitle.equals("") || qTitle==null) {
       log.error("content empty or qid invalid");
       return false;
     }
-    int result = questionDao.updateQuestion(qContent,qid);
+    int result = questionDao.updateQuestion(qTitle,qContent,qid);
     if(result<0) {
       log.error("update failure :(");
       return false;
@@ -100,6 +111,10 @@ public class QuestionService {
   public List<Question> listAllQuestions() {
     return questionDao.listAllQuestion();
 
+  }
+
+  public boolean uploadPicture() {
+    return false;
   }
 
 
