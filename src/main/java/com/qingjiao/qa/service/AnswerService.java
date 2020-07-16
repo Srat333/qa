@@ -13,7 +13,6 @@ import java.util.Date;
 @Service
 public class AnswerService {
 
-
   @Autowired
   private AnswerDao answerDao;
 
