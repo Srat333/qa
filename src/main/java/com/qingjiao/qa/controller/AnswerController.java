@@ -33,7 +33,7 @@ public class AnswerController {
   @RequestMapping(value = {"/comment"},method = RequestMethod.POST)
   public void comment(@RequestParam("comment") String comment,
                       @RequestParam("score") double score,
-                      @RequestParam("aid") Long aid) {
+                      @RequestParam("qid") Long aid) {
     answerService.comment(comment,score,aid);
   }
 
