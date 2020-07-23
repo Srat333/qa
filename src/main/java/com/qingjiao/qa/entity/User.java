@@ -9,9 +9,16 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class WXSessionModel {
+public class User {
+    private String uid;
 
-    private String session_key;
-    private String openid;
+    private String nickname;
+
+    private int gender;
+
+    private String url;
+
+    private String city;
+
+    private String country;
 }
-
