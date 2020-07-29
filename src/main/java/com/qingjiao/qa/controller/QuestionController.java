@@ -6,6 +6,8 @@ import com.qingjiao.qa.service.QuestionService;
 import com.qingjiao.qa.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +22,7 @@ public class QuestionController {
   private QuestionService questionService;
 
   @RequestMapping(value={"/add"},method = RequestMethod.POST)
+  @CachePut(value = "userCache",key = "#result.qid+''")
   public void addQuestion(@RequestParam("title") String qTitle,
                           @RequestParam("content") String qContent,
                           @RequestParam("category") String category,

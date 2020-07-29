@@ -5,6 +5,10 @@ import com.qingjiao.qa.entity.Question;
 import com.qingjiao.qa.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,11 +16,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
+@CacheConfig(cacheNames = "question")
 public class QuestionService {
+
 
   @Autowired
   private QuestionDao questionDao;
@@ -24,15 +32,12 @@ public class QuestionService {
   @Autowired
   private ResourceLoader resourceLoader;
 
+
   public boolean addQuestion(String q_title,String q_content, String category,String tag) {
     if(q_content.equals("") || tag.equals("")) {
       log.error("content empty");
       return false;
     }
-
-   // String path = "";
-   // String fileName = pic.getOriginalFilename();
-
 
     Date curDate = new Date();
     Question q = new Question();
@@ -62,12 +67,16 @@ public class QuestionService {
 
   }
 
+
+
+  @CachePut(key = "#qid",value = "qTitle")
   public boolean updateQuestion(String qTitle, String qContent,Long qid) {
     if(qContent.equals("")  || qContent==null || qid<=0 || qTitle.equals("") || qTitle==null) {
       log.error("content empty or qid invalid");
       return false;
     }
     int result = questionDao.updateQuestion(qTitle,qContent,qid);
+    //Question question = qMap.get(qid);
     if(result<0) {
       log.error("update failure :(");
       return false;
@@ -86,6 +95,7 @@ public class QuestionService {
 
   }
 
+  @Cacheable(key="#qid",value = "question")
   public Question searchOneQuestion(Long qid) {
     if(qid<=0) {
       return null;
@@ -93,6 +103,8 @@ public class QuestionService {
     return questionDao.searchOneQuestion(qid);
   }
 
+
+  @CacheEvict(key = "#qid",value = "question")
   public boolean deleteQuestion(Long qid) {
     if(qid<0) {
       return false;

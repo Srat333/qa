@@ -1,0 +1,17 @@
+[35249][environment] CWD = /Users/wangruofan/Desktop/qa
+[35249][environment] No .inferconfig file found
+[35249][environment] Project root = /Users/wangruofan/Desktop/qa
+[35249][environment] INFER_ARGS =   @/var/folders/r2/gb_zdkk53xb_23n_9r4b1xlh0000gn/T/args.tmp.f54b74
+[35249][environment]   ++Contents of '/var/folders/r2/gb_zdkk53xb_23n_9r4b1xlh0000gn/T/args.tmp.f54b74':
+[35249][environment]     run
+[35249][environment]   
+[35249][environment] command line arguments:   infer run -- mvn packageActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), inefficient keyset iterator (Java), liveness (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC), Starvation analysis (C/C++/ObjC, Java)
+[35249][environment] Infer log identifier is 
+Infer version v0.17.0
+[35249][environment] Copyright 2009 - present Facebook. All Rights Reserved.
+[35249][environment] 
+[35249][   progress] Capturing in maven mode...
+[35249][      debug] Running maven capture:
+[35249][      debug] mvn 'package' '-P' 'infer-capture'
+[35249][  user warn] Nothing to compile. Try cleaning the build first.
+[35249][   progress] There was nothing to analyze.
