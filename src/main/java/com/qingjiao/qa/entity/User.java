@@ -10,15 +10,13 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class User {
-    private String uid;
+    private long uid;
 
     private String nickname;
 
-    private int gender;
-
     private String url;
 
-    private String city;
+    private String bio;
 
-    private String country;
+    private double rating;
 }

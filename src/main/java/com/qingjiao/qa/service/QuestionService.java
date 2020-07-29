@@ -24,7 +24,7 @@ public class QuestionService {
   @Autowired
   private ResourceLoader resourceLoader;
 
-  public boolean addQuestion(String q_title,String q_content, String category,String tag) {
+  public boolean addQuestion(String q_title, long uid, String q_content, String category,String tag) {
     if(q_content.equals("") || tag.equals("")) {
       log.error("content empty");
       return false;
@@ -37,7 +37,7 @@ public class QuestionService {
     Date curDate = new Date();
     Question q = new Question();
    // q.setQid(0L);
-    q.setQuestion_uid(111L);
+    q.setQuestion_uid(uid);
     q.setQ_title(q_title);
     q.setQ_content(q_content);
     q.setCategory(category);

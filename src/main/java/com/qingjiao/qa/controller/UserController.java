@@ -20,14 +20,11 @@ public class UserController {
     UserService userService;
 
     @RequestMapping(value={"/add"},method = RequestMethod.POST)
-    public void addUser(@RequestParam("uid") String uid,
+    public void addUser(
                             @RequestParam("nickname") String nickname,
-                            @RequestParam("gender") int gender,
-                            @RequestParam("url") String url,
-                            @RequestParam("city") String city,
-                            @RequestParam("country") String country) {
+                            @RequestParam("url") String url) {
 
-        boolean result = userService.addUser(uid, nickname, gender, url, city, country);
+        boolean result = userService.addUser(nickname, url);
         if(result)
             log.info("add user successfully!!!!! <3");
         else {
@@ -36,17 +33,38 @@ public class UserController {
     }
 
     @RequestMapping(value = {"/update"}, method = RequestMethod.PATCH)
-    public void updateUser(@RequestParam("uid") String uid,
+    public void updateUser(@RequestParam("uid") long uid,
                            @RequestParam("nickname") String nickname,
-                           @RequestParam("gender") int gender,
                            @RequestParam("url") String url,
-                           @RequestParam("city") String city,
-                           @RequestParam("country") String country) {
-        boolean result = userService.updateUser(uid, nickname, gender, url, city, country);
+                           @RequestParam("bio") String bio,
+                           @RequestParam("rating") double rating) {
+        boolean result = userService.updateUser(uid, nickname, url, bio, rating);
         if(result)
-            log.info("add user successfully!!!!! <3");
+            log.info("update user successfully!!!!! <3");
         else {
-            log.error("add user failed :(");
+            log.error("update user failed :(");
+        }
+    }
+
+    @RequestMapping(value = {"/updatebio"}, method = RequestMethod.PATCH)
+    public void updateBio(@RequestParam("uid") long uid,
+                           @RequestParam("bio") String bio) {
+        boolean result = userService.updateBio(uid, bio);
+        if(result)
+            log.info("update user bio successfully!!!!! <3");
+        else {
+            log.error("update user bio failed :(");
+        }
+    }
+
+    @RequestMapping(value = {"/updaterating"}, method = RequestMethod.PATCH)
+    public void updateRating(@RequestParam("uid") long uid,
+                           @RequestParam("rating") double rating) {
+        boolean result = userService.updateRating(uid, rating);
+        if(result)
+            log.info("update user rating successfully!!!!! <3");
+        else {
+            log.error("update user rating failed :(");
         }
     }
 
@@ -67,8 +85,8 @@ public class UserController {
     }
 
     @RequestMapping(value={"/searchId"},method = RequestMethod.GET)
-    public User searchUserById(@RequestParam("uid") String uid){
-        if(uid.equals("")){
+    public User searchUserById(@RequestParam("uid") long uid){
+        if(uid<0){
             log.error("uid is empty");
             return null;
         }
@@ -83,7 +101,7 @@ public class UserController {
     }
 
     @RequestMapping(value={"/delete"},method = RequestMethod.DELETE)
-    public void deleteQuestion(@RequestParam("uid") String uid) {
+    public void deleteQuestion(@RequestParam("uid") long uid) {
         if(userService.searchUserById(uid)==null) {
             log.error("user not found :8");
             return;

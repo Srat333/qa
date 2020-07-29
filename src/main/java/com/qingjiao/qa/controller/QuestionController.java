@@ -21,11 +21,12 @@ public class QuestionController {
 
   @RequestMapping(value={"/add"},method = RequestMethod.POST)
   public void addQuestion(@RequestParam("title") String qTitle,
+                          @RequestParam("uid") long uid,
                           @RequestParam("content") String qContent,
                           @RequestParam("category") String category,
                           @RequestParam("tag") String tag) {
 
-    boolean result = questionService.addQuestion(qTitle,qContent,category,tag);
+    boolean result = questionService.addQuestion(qTitle,uid,qContent,category,tag);
     if(result)
       log.info("add questions successfully!!!!! <3");
     else {

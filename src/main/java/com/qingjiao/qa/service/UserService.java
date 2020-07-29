@@ -16,18 +16,13 @@ public class UserService {
     @Autowired
     UserDao userDao;
 
-    public boolean addUser(String uid, String nickname, int gender,  String url, String city, String country) {
+    public boolean addUser(String nickname, String url) {
+
         User user = new User();
-        if(uid.equals("")){
-            log.error("uid is empty");
-            return false;
-        }
-        user.setUid(uid);
         user.setNickname(nickname);
-        user.setGender(gender);
         user.setUrl(url);
-        user.setCity(city);
-        user.setCountry(country);
+        user.setBio("to be updated");
+        user.setRating(5);
 
         Date curDate = new Date();
 
@@ -48,18 +43,44 @@ public class UserService {
         }
     }
 
-    public boolean updateUser(String uid, String nickname, int gender,String url,String city, String country) {
-        if(uid.equals("")) {
-            log.error("uid is empty :(");
+    public boolean updateBio(long uid, String bio) {
+        if(searchUserById(uid)==null){
+            log.error("user not exiest");
             return false;
         }
+        int idx = userDao.updateBio(uid, bio);
+        if(idx<0) {
+            log.error("update user bio failure :(");
+            return false;
+        } else {
+            log.info("update user bio successfully :)");
+            return true;
+        }
+    }
+
+    public boolean updateRating(long uid, double rating){
+        if(searchUserById(uid)==null){
+            log.error("user not exiest");
+            return false;
+        }
+        int idx = userDao.updateRating(uid, rating);
+        if(idx<0) {
+            log.error("update user rating failure :(");
+            return false;
+        } else {
+            log.info("update user rating successfully :)");
+            return true;
+        }
+    }
+
+    public boolean updateUser(long uid, String nickname, String url, String bio, double rating) {
+
         User user = new User();
         user.setUid(uid);
         user.setNickname(nickname);
-        user.setGender(gender);
         user.setUrl(url);
-        user.setCity(city);
-        user.setCountry(country);
+        user.setBio(bio);
+        user.setRating(rating);
         int index = userDao.updateUser(user);
         if(index<0) {
             log.error("update user failure :(");
@@ -70,8 +91,8 @@ public class UserService {
         }
     }
 
-    public boolean deleteUser(String uid) {
-        if(uid.equals("")) {
+    public boolean deleteUser(long uid) {
+        if(uid<0) {
             log.error("uid is empty");
             return false;
         }
@@ -85,8 +106,8 @@ public class UserService {
         }
     }
 
-    public User searchUserById(String uid) {
-        if(uid.equals("")) {
+    public User searchUserById(long uid) {
+        if(uid<0) {
             log.error("uid is empty");
             return null;
         }
