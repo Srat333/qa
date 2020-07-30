@@ -2,7 +2,6 @@ package com.qingjiao.qa.dao;
 
 
 import com.qingjiao.qa.entity.Answer;
-import com.qingjiao.qa.entity.Question;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 

@@ -2,14 +2,11 @@ package com.qingjiao.qa.service;
 
 import com.qingjiao.qa.dao.QuestionDao;
 import com.qingjiao.qa.entity.Question;
-import com.qingjiao.qa.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,8 +21,8 @@ public class QuestionService {
   @Autowired
   private ResourceLoader resourceLoader;
 
-  public boolean addQuestion(String q_title, long uid, String q_content, String category,String tag) {
-    if(q_content.equals("") || tag.equals("")) {
+  public boolean addQuestion(String qTitle, long uid, String qContent, String category,String tag) {
+    if(qContent.equals("") || tag.equals("")) {
       log.error("content empty");
       return false;
     }
@@ -37,13 +34,13 @@ public class QuestionService {
     Date curDate = new Date();
     Question q = new Question();
    // q.setQid(0L);
-    q.setQuestion_uid(uid);
-    q.setQ_title(q_title);
-    q.setQ_content(q_content);
+    q.setQuestionUid(uid);
+    q.setQTitle(qTitle);
+    q.setQContent(qContent);
     q.setCategory(category);
     q.setTag(tag);
     q.setPrice(0.99);
-    q.setCreate_time(curDate);
+    q.setCreateTime(curDate);
     int result=-1;
     try {
       if(questionDao!=null)

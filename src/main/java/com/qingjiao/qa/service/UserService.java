@@ -1,139 +1,81 @@
 package com.qingjiao.qa.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.qingjiao.qa.dao.UserDao;
 import com.qingjiao.qa.entity.User;
+import com.qingjiao.qa.util.GlobalResult;
+import com.qingjiao.qa.util.WechatUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
 
+import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Service
 public class UserService {
     @Autowired
-    UserDao userDao;
+    private UserDao userDao;
 
-    public boolean addUser(String nickname, String url) {
+    public GlobalResult login(String code,
+                 String rawData,
+                 String signature,
+                 String encrypteData,
+                 String iv){
+        // 用户非敏感信息：rawData
+        // 签名：signature
+        JSONObject rawDataJson = JSON.parseObject(rawData);
+        // 1.接收小程序发送的code
+        // 2.开发者服务器 登录凭证校验接口 appi + appsecret + code
+        JSONObject SessionKeyOpenId = WechatUtil.getSessionKeyOrOpenId(code);
+        // 3.接收微信接口服务 获取返回的参数
+        String openid = SessionKeyOpenId.getString("openid");
+        String sessionKey = SessionKeyOpenId.getString("session_key");
 
-        User user = new User();
-        user.setNickname(nickname);
-        user.setUrl(url);
-        user.setBio("to be updated");
-        user.setRating(5);
-
-        Date curDate = new Date();
-
-        int result=-1;
-        try {
-            if(userDao!=null)
-                result = userDao.addUser(user);
-        } catch (Exception e){
-            log.error("add exception happened :(");
-            e.printStackTrace();
+        // 4.校验签名 小程序发送的签名signature与服务器端生成的签名signature2 = sha1(rawData + sessionKey)
+        String signature2 = DigestUtils.sha1Hex(rawData + sessionKey);
+        if (!signature.equals(signature2)) {
+            return GlobalResult.build(500, "签名校验失败", null);
         }
-        if(result!=-1) {
-            log.info("add user successfully :) "+curDate+" good luck <3");
-            return true;
+        // 4.根据返回的User实体类，判断用户是否是新用户，是的话，将用户信息存到数据库；不是的话，更新最新登录时间
+        User user = this.userDao.selectById(openid);
+        // uuid生成唯一key，用于维护微信小程序用户与服务端的会话
+        String skey = UUID.randomUUID().toString();
+        if (user == null) {
+            // 用户信息入库
+            String nickName = rawDataJson.getString("nickName");
+            String avatarUrl = rawDataJson.getString("avatarUrl");
+            String gender = rawDataJson.getString("gender");
+            String city = rawDataJson.getString("city");
+            String country = rawDataJson.getString("country");
+            String province = rawDataJson.getString("province");
+
+            user = new User();
+            user.setOpenId(openid);
+            user.setSkey(skey);
+            user.setCreateTime(new Date());
+            user.setLastVisitTime(new Date());
+            user.setSessionKey(sessionKey);
+            user.setCity(city);
+            user.setProvince(province);
+            user.setCountry(country);
+            user.setAvatarUrl(avatarUrl);
+            user.setGender(Integer.parseInt(gender));
+            user.setNickName(nickName);
+
+            this.userDao.insert(user);
         } else {
-            log.error("add user failure :(");
-            return false;
+            // 已存在，更新用户登录时间
+            user.setLastVisitTime(new Date());
+            // 重新设置会话skey
+            user.setSkey(skey);
+            this.userDao.updateById(user);
         }
+        GlobalResult result = GlobalResult.build(200, null, skey);
+        return result;
     }
-
-    public boolean updateBio(long uid, String bio) {
-        if(searchUserById(uid)==null){
-            log.error("user not exiest");
-            return false;
-        }
-        int idx = userDao.updateBio(uid, bio);
-        if(idx<0) {
-            log.error("update user bio failure :(");
-            return false;
-        } else {
-            log.info("update user bio successfully :)");
-            return true;
-        }
-    }
-
-    public boolean updateRating(long uid, double rating){
-        if(searchUserById(uid)==null){
-            log.error("user not exiest");
-            return false;
-        }
-        int idx = userDao.updateRating(uid, rating);
-        if(idx<0) {
-            log.error("update user rating failure :(");
-            return false;
-        } else {
-            log.info("update user rating successfully :)");
-            return true;
-        }
-    }
-
-    public boolean updateUser(long uid, String nickname, String url, String bio, double rating) {
-
-        User user = new User();
-        user.setUid(uid);
-        user.setNickname(nickname);
-        user.setUrl(url);
-        user.setBio(bio);
-        user.setRating(rating);
-        int index = userDao.updateUser(user);
-        if(index<0) {
-            log.error("update user failure :(");
-            return false;
-        } else {
-            log.info("update user successfully :)");
-            return true;
-        }
-    }
-
-    public boolean deleteUser(long uid) {
-        if(uid<0) {
-            log.error("uid is empty");
-            return false;
-        }
-        int result = userDao.deleteUser(uid);
-        if(result<0) {
-            log.error("delete user failure :(");
-            return false;
-        } else {
-            log.info("delete user successfully :)");
-            return true;
-        }
-    }
-
-    public User searchUserById(long uid) {
-        if(uid<0) {
-            log.error("uid is empty");
-            return null;
-        }
-        User user = userDao.searchUserById(uid);
-        if(user==null) {
-            log.error("user not exist");
-            return null;
-        }
-        return user;
-    }
-
-    public List<User> searchUserByNickname(String nickname) {
-        if(nickname.equals("")) {
-            log.error("nickname is empty");
-            return null;
-        }
-        List<User> users = userDao.searchUserByNickname(nickname);
-        if(users.size()==0) {
-            log.error("user not exist");
-            return null;
-        }
-        return users;
-    }
-
-    public List<User> userList() {
-        return userDao.userList();
-    }
-
 }
