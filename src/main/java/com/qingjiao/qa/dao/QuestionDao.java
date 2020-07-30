@@ -14,22 +14,26 @@ public interface QuestionDao {
   @Insert("INSERT INTO questions(question_uid,q_title,q_content,create_time,pid,category," +
           "tag, price) VALUES(#{question_uid},#{q_title},#{q_content},#{create_time},#{pid},#{category}," +
           "#{tag},#{price})")
+  @Options(useGeneratedKeys = true,keyProperty = "qid",keyColumn = "qid")
   int addQuestion(Question q);
 
-  @Update("UPDATE questions SET q_title=#{qTitle},q_content=#{qContent} where qid=#{qid}")
-  int updateQuestion(String qTitle,String qContent, Long qid);
+  @Update("UPDATE questions SET q_title=#{q_title},q_content=#{q_content} where qid=#{qid}")
+  int updateQuestion(Question question);
 
-  @Delete("DELETE FROM  questions WHERE qid=#{qid}")
+  @Delete("DELETE FROM questions WHERE qid=#{qid}")
   int deleteQuestion(Long qid);
 
   @Select("SELECT * FROM questions WHERE CONCAT (q_title, q_content) LIKE CONCAT('%',#{keyword},'%')")
   List<Question> searchQuestions(@Param("keyword") String keyword);
 
   @Select("SELECT * FROM questions WHERE qid=#{qid}")
-  Question searchOneQuestion(@Param("qid") Long qid);
+  Question searchOneQuestion(Long qid);
 
   @Select("SELECT * FROM questions")
   List<Question> listAllQuestion();
+
+  @Delete("DELETE * FROM questions")
+  int deleteAllQuestion();
 
 
 
