@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository;
 public interface AnswerDao {
 
   @Insert("INSERT INTO answers(qid,answer_uid,a_content,pid,answer_time,score,comment)" +
-          "VALUES(#{qid},#{answer_uid},#{a_content},#{pid},#{answer_time},#{score},#{comment})")
+          "VALUES(#{qid},#{answerUid},#{aContent},#{pid},#{answerTime},#{score},#{comment})")
   int addAnswer(Answer a);
 
-  @Update("UPDATE answers SET a_content=#{a_content} WHERE aid = #{aid}")
+  @Update("UPDATE answers SET a_content=#{aContent} WHERE aid = #{aid}")
   int updateAnswer(String a_content,Long aid);
 
   @Update("UPDATE answers SET comment=#{comment},score = #{score} WHERE aid = #{aid}")

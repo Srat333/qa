@@ -22,10 +22,10 @@ public class AnswerService {
       return false;
     }
     Answer answer = new Answer();
-    answer.setAnswer_uid(222L);
+    answer.setAnswerUid(222L);
     Date date = new Date();
-    answer.setAnswer_time(date);
-    answer.setA_content(a_content);
+    answer.setAnswerTime(date);
+    answer.setAContent(a_content);
     answer.setQid(qid);
     int index = answerDao.addAnswer(answer);
     if(index<0) {
