@@ -12,7 +12,7 @@ public interface QuestionDao {
 
 
   @Insert("INSERT INTO questions(question_uid,q_title,q_content,create_time,pid,category," +
-          "tag, price) VALUES(#{question_uid},#{q_title},#{q_content},#{create_time},#{pid},#{category}," +
+          "tag, price) VALUES(#{questionUid},#{qTitle},#{qContent},#{createTime},#{pid},#{category}," +
           "#{tag},#{price})")
   @Options(useGeneratedKeys = true,keyProperty = "qid",keyColumn = "qid")
   int addQuestion(Question q);

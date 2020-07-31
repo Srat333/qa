@@ -2,7 +2,6 @@ package com.qingjiao.qa.dao;
 
 
 import com.qingjiao.qa.entity.Answer;
-import com.qingjiao.qa.entity.Question;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -11,12 +10,12 @@ import org.springframework.stereotype.Repository;
 public interface AnswerDao {
 
   @Insert("INSERT INTO answers(qid,answer_uid,a_content,pid,answer_time,score,comment)" +
-          "VALUES(#{qid},#{answer_uid},#{a_content},#{pid},#{answer_time},#{score},#{comment})")
-  @Options(useGeneratedKeys = true,keyProperty = "aid",keyColumn = "aid")
+  "VALUES(#{qid},#{answerUid},#{aContent},#{pid},#{answerTime},#{score},#{comment})")
   int addAnswer(Answer a);
 
-  @Update("UPDATE answers SET a_content=#{a_content} WHERE aid = #{aid}")
-  int updateAnswer(Answer a);
+  @Update("UPDATE answers SET a_content=#{aContent} WHERE aid = #{aid}")
+  int updateAnswer(String aContent,Long aid);
+
 
   @Update("UPDATE answers SET comment=#{comment},score = #{score} WHERE aid = #{aid}")
   int comment(Answer a);

@@ -26,14 +26,14 @@ public class Question implements Serializable {
 
   private Long qid;
 
-  private Long question_uid;
+  private Long questionUid;
 
-  private String q_title;
+  private String qTitle;
 
-  private String q_content;
+  private String qContent;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  private Date create_time;
+  private Date createTime;
 
   private String pid;
 

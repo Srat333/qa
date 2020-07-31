@@ -32,14 +32,14 @@ public class Answer implements Serializable {
 
   private Long qid;
 
-  private Long answer_uid;
+  private Long answerUid;
 
-  private String a_content;
+  private String aContent;
 
   private String pid;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  private Date answer_time;
+  private Date answerTime;
 
   private Double score;
 

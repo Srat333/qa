@@ -29,6 +29,7 @@ public class QuestionController {
   private RedisTemplate redisTemplate;
 
   @RequestMapping(value={"/add"},method = RequestMethod.POST)
+
   public Result addQuestion(@RequestParam("title") String qTitle,
                             @RequestParam("content") String qContent,
                             @RequestParam("category") String category,
@@ -40,13 +41,13 @@ public class QuestionController {
     Date curDate = new Date();
     Question q = new Question();
     // q.setQid(0L);
-    q.setQuestion_uid(111L);
-    q.setQ_title(qTitle);
-    q.setQ_content(qContent);
+    q.setQuestionUid(111L);
+    q.setQTitle(qTitle);
+    q.setQContent(qContent);
     q.setCategory(category);
     q.setTag(tag);
     q.setPrice(0.99);
-    q.setCreate_time(curDate);
+    q.setCreateTime(curDate);
     boolean flag = questionService.addQuestion(q);
     redisTemplate.opsForValue().set("question"+q.getQid(),q);
     Result result = new Result();
@@ -72,8 +73,8 @@ public class QuestionController {
     if(question==null) {
       return ResultUtil.empty(new Result());
     }
-    question.setQ_title(qTitle);
-    question.setQ_content(qContent);
+    question.setQTitle(qTitle);
+    question.setQContent(qContent);
     redisTemplate.opsForValue().set("question"+qid,question);
     log.info(question.toString());
     boolean flag = questionService.updateQuestion(question);
