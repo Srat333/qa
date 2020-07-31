@@ -61,9 +61,9 @@ public class AnswerServiceImpl implements AnswerService {
   @Override
   public boolean deleteAnswer(Long aid) {
 
-    int result = answerDao.deleteAnswer(aid);
-    log.info(String.valueOf(result));
-    if(result<0) {
+    answerDao.deleteAnswer(aid);
+    //log.info(String.valueOf(result));
+    if(aid<0) {
       log.error("delete answer failure :(");
       return false;
     } else {

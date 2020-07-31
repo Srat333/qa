@@ -102,17 +102,20 @@ public class AnswerController {
 
   @RequestMapping(value = {"/delete_answer"},method = RequestMethod.DELETE)
   public Result deleteAnswer(@RequestParam("aid") Long aid) {
-    Answer answer = (Answer)redisTemplate.opsForValue().get("answer"+aid);
-    if(answer==null)
-      answer = answerService.searchOneAnswer(aid);
-    if(answer==null)
-      return ResultUtil.empty(new Result());
+//    Answer answer = (Answer)redisTemplate.opsForValue().get("answer"+aid);
+//    if(answer==null)
+//      answer = answerService.searchOneAnswer(aid);
+//    if(answer==null)
+//      return ResultUtil.empty(new Result());
+//    log.info(answer.toString());
     boolean flag = answerService.deleteAnswer(aid);
-    redisTemplate.delete("answer"+aid);
+    log.info(String.valueOf(flag));
+  //  redisTemplate.delete("answer"+aid);
     Result result = new Result();
     if(flag) {
-      return ResultUtil.succ(result,answer);
+      return ResultUtil.succ(result,null);
     } else {
+      log.error(String.valueOf(flag));
       return ResultUtil.error(result);
     }
   }
