@@ -9,6 +9,7 @@ import com.qingjiao.qa.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,17 +36,17 @@ public class AnswerController {
       log.error("answer is empty :(");
     }
     Answer answer = new Answer();
-    answer.setAnswer_uid(222L);
+    answer.setAnswerUid(222L);
     Date date = new Date();
-    answer.setAnswer_time(date);
-    answer.setA_content(aContent);
+    answer.setAnswerTime(date);
+    answer.setAContent(aContent);
     answer.setQid(qid);
     boolean flag = answerService.addAnswer(answer);
     redisTemplate.opsForValue().set("answer"+answer.getAid(),answer);
     log.info("saved in redis answer"+" "+answer.getAid());
     Result result = new Result();
     if(flag) {
-      return ResultUtil.succ(result,answer);
+      return ResultUtil.succ(result,answer,"answer");
     } else {
       return ResultUtil.error(result);
     }
@@ -62,13 +63,13 @@ public class AnswerController {
     Answer answer = (Answer)redisTemplate.opsForValue().get("answer"+aid);
     if(answer==null)
       answer = answerService.searchOneAnswer(aid);
-    answer.setA_content(content);
-    answer.setAnswer_time(new Date());
+    answer.setAContent(content);
+    answer.setAnswerTime(new Date());
     boolean flag = answerService.updateAnswer(answer);
     redisTemplate.opsForValue().set("answer"+aid,answer);
     Result result = new Result();
     if(flag) {
-      return ResultUtil.succ(result,answer);
+      return ResultUtil.succ(result,answer,"re-reply");
     } else {
       return ResultUtil.error(result);
     }
@@ -93,7 +94,7 @@ public class AnswerController {
     redisTemplate.opsForValue().set("answer"+answer.getAid(),answer);
     Result result = new Result();
     if(flag) {
-      return ResultUtil.succ(result,answer);
+      return ResultUtil.succ(result,answer,"comment");
     } else {
       return ResultUtil.error(result);
     }
@@ -102,18 +103,18 @@ public class AnswerController {
 
   @RequestMapping(value = {"/delete_answer"},method = RequestMethod.DELETE)
   public Result deleteAnswer(@RequestParam("aid") Long aid) {
-//    Answer answer = (Answer)redisTemplate.opsForValue().get("answer"+aid);
-//    if(answer==null)
-//      answer = answerService.searchOneAnswer(aid);
-//    if(answer==null)
-//      return ResultUtil.empty(new Result());
-//    log.info(answer.toString());
+    Answer answer = (Answer)redisTemplate.opsForValue().get("answer"+aid);
+    if(StringUtils.isEmpty(answer))
+      answer = answerService.searchOneAnswer(aid);
+    if(StringUtils.isEmpty(answer))
+      return ResultUtil.empty(new Result());
+    log.info(answer.toString());
     boolean flag = answerService.deleteAnswer(aid);
     log.info(String.valueOf(flag));
-  //  redisTemplate.delete("answer"+aid);
+    redisTemplate.delete("answer"+aid);
     Result result = new Result();
     if(flag) {
-      return ResultUtil.succ(result,null);
+      return ResultUtil.succ(result,null,"delete");
     } else {
       log.error(String.valueOf(flag));
       return ResultUtil.error(result);

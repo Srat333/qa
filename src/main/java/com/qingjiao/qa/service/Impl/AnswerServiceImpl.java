@@ -4,6 +4,7 @@ import com.qingjiao.qa.dao.AnswerDao;
 import com.qingjiao.qa.entity.Answer;
 import com.qingjiao.qa.service.AnswerService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
@@ -12,9 +13,8 @@ import javax.annotation.Resource;
 @Service
 public class AnswerServiceImpl implements AnswerService {
 
-  @Resource
+  @Autowired
   private AnswerDao answerDao;
-
 
 
   @Override
@@ -61,9 +61,9 @@ public class AnswerServiceImpl implements AnswerService {
   @Override
   public boolean deleteAnswer(Long aid) {
 
-    answerDao.deleteAnswer(aid);
+    int index = answerDao.deleteAnswer(aid);
     //log.info(String.valueOf(result));
-    if(aid<0) {
+    if(index<0) {
       log.error("delete answer failure :(");
       return false;
     } else {

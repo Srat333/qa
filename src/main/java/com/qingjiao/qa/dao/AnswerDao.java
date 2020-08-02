@@ -14,7 +14,7 @@ public interface AnswerDao {
   int addAnswer(Answer a);
 
   @Update("UPDATE answers SET a_content=#{aContent} WHERE aid = #{aid}")
-  int updateAnswer(String aContent,Long aid);
+  int updateAnswer(Answer a);
 
 
   @Update("UPDATE answers SET comment=#{comment},score = #{score} WHERE aid = #{aid}")

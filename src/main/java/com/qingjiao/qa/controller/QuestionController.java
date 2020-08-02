@@ -52,7 +52,7 @@ public class QuestionController {
     redisTemplate.opsForValue().set("question"+q.getQid(),q);
     Result result = new Result();
     if(flag) {
-      return ResultUtil.qSucc(result,q);
+      return ResultUtil.qSucc(result,q,"add");
     } else {
       return ResultUtil.error(result);
     }
@@ -68,20 +68,22 @@ public class QuestionController {
       return ResultUtil.empty(new Result());
     }
     Question question = (Question) redisTemplate.opsForValue().get("question"+qid);
-    if(question==null)
+    if(question==null) {
+      log.info("cannot find it in redis");
       question = questionService.searchOneQuestion(qid);
+    }
     if(question==null) {
       return ResultUtil.empty(new Result());
     }
     question.setQTitle(qTitle);
     question.setQContent(qContent);
     redisTemplate.opsForValue().set("question"+qid,question);
-    log.info(question.toString());
+   // log.info(question.toString());
     boolean flag = questionService.updateQuestion(question);
     Result result = new Result();
     if(flag) {
       log.info("update succ :)");
-      return ResultUtil.qSucc(result,question);
+      return ResultUtil.qSucc(result,question,"update");
     } else {
       log.error("update failed :(");
       return ResultUtil.error(result);
@@ -90,35 +92,39 @@ public class QuestionController {
 
   @RequestMapping(value={"/search"},method = RequestMethod.GET)
   public Result searchQuestions(@RequestParam("keyword") String keyword) {
-   // long size = redisTemplate.opsForList().size(keyword);
-  //  List<Question> questions = redisTemplate.opsForList().range(keyword,0,size);
-  //  if(questions==null) {
-    List<Question>questions = questionService.searchQuestion(keyword);
-  //    redisTemplate.opsForList().leftPushAll(keyword,questions);
-  //  }
+    long size = redisTemplate.opsForList().size(keyword);
+    List<Question> questions = redisTemplate.opsForList().range(keyword,0,size);
+    if(questions==null) {
+      log.info("cannot find in redis");
+      questions = questionService.searchQuestion(keyword);
+      redisTemplate.opsForList().leftPushAll(keyword,questions);
+    }
 
     if(questions!=null) {
-      log.info("no similar results");
+      log.info("Found Something");
       return ResultUtil.SearchQuestionSucc(new Result(),questions);
     } else {
-      log.info("found something");
+      log.info("No Similar Results");
       return ResultUtil.error(new Result());
     }
   }
 
   @RequestMapping(value={"/delete"},method = RequestMethod.DELETE)
   public Result deleteQuestion(@RequestParam("qid") Long qid) {
-  //  Question question = (Question) redisTemplate.opsForValue().get("question"+qid);
-  //  redisTemplate.delete("quesiton"+qid);
-  //  if(question==null)
-   //   question = questionService.searchOneQuestion(qid);
-   // if(question==null)
-   //   return ResultUtil.empty(new Result());
-    Question question= questionService.searchOneQuestion(qid);
+    Question question = (Question) redisTemplate.opsForValue().get("question"+qid);
+    if(question!=null)
+      redisTemplate.delete("question"+qid);
+    if(question==null) {
+      log.info("cannot find in redis");
+      question = questionService.searchOneQuestion(qid);
+    }
+    if(question==null)
+      return ResultUtil.empty(new Result());
+    question= questionService.searchOneQuestion(qid);
     boolean result = questionService.deleteQuestion(qid);
     if(result) {
       log.info("delete succ :)");
-      return ResultUtil.qSucc(new Result(),question);
+      return ResultUtil.qSucc(new Result(),question,"delete");
     } else {
       log.error("delete failed :(");
       return ResultUtil.error(new Result());

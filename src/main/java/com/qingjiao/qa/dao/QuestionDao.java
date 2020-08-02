@@ -17,7 +17,7 @@ public interface QuestionDao {
   @Options(useGeneratedKeys = true,keyProperty = "qid",keyColumn = "qid")
   int addQuestion(Question q);
 
-  @Update("UPDATE questions SET q_title=#{q_title},q_content=#{q_content} where qid=#{qid}")
+  @Update("UPDATE questions SET q_title=#{qTitle},q_content=#{qContent} where qid=#{qid}")
   int updateQuestion(Question question);
 
   @Delete("DELETE FROM questions WHERE qid=#{qid}")

@@ -17,11 +17,11 @@ public class ResultUtil<T> {
     return result;
   }
 
-  public static Result succ(Result result, Answer answer) {
+  public static Result succ(Result result, Answer answer, String option) {
     result.setCode(200);
     result.setSuccess(true);
     result.setData(answer);
-    result.setMsg("add a answer succ :) <3");
+    result.setMsg(option+"a answer succ :) <3");
     return result;
   }
 
@@ -33,11 +33,11 @@ public class ResultUtil<T> {
     return result;
   }
 
-  public static Result qSucc(Result result, Question question) {
+  public static Result qSucc(Result result, Question question, String option) {
     result.setCode(200);
     result.setSuccess(true);
     result.setData(question);
-    result.setMsg("add a question succ :) <3");
+    result.setMsg(option+"a question succ :) <3");
     return result;
   }
 
