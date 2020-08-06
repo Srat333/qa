@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface OrderService {
 
-  public boolean addOrder(Long qid,String url);
+  Result addOrder(Long qid,String url);
 
-  public boolean payOrder(Long qid);
+  Result payOrder(Long qid);
 
-  public boolean refund(Long qid);
+  Result refund(Long qid);
 
   public Result searchOrdersByUid(Long uid);
 

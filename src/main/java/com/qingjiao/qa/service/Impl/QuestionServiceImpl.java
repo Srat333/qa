@@ -41,7 +41,6 @@ public class QuestionServiceImpl implements QuestionService {
     }
     Date curDate = new Date();
     Question q = new Question();
-    // q.setQid(0L);
     q.setQuestionUid(111L);
     q.setQTitle(qTitle);
     q.setQContent(qContent);
@@ -53,8 +52,10 @@ public class QuestionServiceImpl implements QuestionService {
     redisTemplate.opsForValue().set("question"+q.getQid(),q);
     Result result = new Result();
     if(index>0) {
+      log.info("add a question succ :)");
       return ResultUtil.qSucc(result,q,"add");
     } else {
+      log.error("add question failed :(");
       return ResultUtil.error(result);
     }
 
@@ -94,19 +95,13 @@ public class QuestionServiceImpl implements QuestionService {
     if(keyword.equals("") || keyword==null) {
       return ResultUtil.empty(new Result());
     }
-    long size = redisTemplate.opsForList().size(keyword);
-    List<Question> questions = redisTemplate.opsForList().range(keyword,0,size);
-    if(questions==null) {
-      log.info("cannot find in redis");
-      questions = questionDao.searchQuestions(keyword);
-      redisTemplate.opsForList().leftPushAll(keyword,questions);
-    }
+      List<Question> questions = questionDao.searchQuestions(keyword);
     if(questions!=null) {
       log.info("Found Something");
       return ResultUtil.SearchSucc(new Result(),questions,"question");
     } else {
       log.info("No Similar Results");
-      return ResultUtil.error(new Result());
+      return ResultUtil.empty(new Result());
     }
 
   }
@@ -144,6 +139,15 @@ public class QuestionServiceImpl implements QuestionService {
   public List<Question> listAllQuestions() {
     return questionDao.listAllQuestion();
 
+  }
+
+  public Result searchQuestionsByUid(Long uid) {
+    List<Question> questions= questionDao.searchQuestionsByUid(uid);
+    if(questions!=null) {
+      return ResultUtil.SearchSucc(new Result(),questions,"user's question");
+    } else {
+      return ResultUtil.error(new Result());
+    }
   }
 
   public boolean uploadPicture() {

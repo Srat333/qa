@@ -25,9 +25,6 @@ public class QuestionController {
   @Autowired
   private QuestionService questionService;
 
-  @Autowired
-  private RedisTemplate redisTemplate;
-
   @RequestMapping(value={"/add"},method = RequestMethod.POST)
 
   public Result addQuestion(@RequestParam("title") String qTitle,
@@ -66,6 +63,12 @@ public class QuestionController {
       return null;
     }
   }
+
+  @RequestMapping(value={"/usr"},method = RequestMethod.GET)
+  public Result searchQuestionsByUid(@PathVariable("uid") Long uid) {
+    return questionService.searchQuestionsByUid(uid);
+  }
+
 
   @RequestMapping(value = {"/upload"}, method = RequestMethod.POST)
   public void upload(@RequestParam("file") MultipartFile file) {

@@ -1,6 +1,7 @@
 package com.qingjiao.qa.util;
 
 import com.qingjiao.qa.entity.Answer;
+import com.qingjiao.qa.entity.Order;
 import com.qingjiao.qa.entity.Question;
 import com.qingjiao.qa.exception.DefinitionException;
 import com.qingjiao.qa.exception.ErrorEnum;
@@ -39,6 +40,14 @@ public class ResultUtil<T> {
     result.setSuccess(true);
     result.setData(question);
     result.setMsg(option+"a question succ :) <3");
+    return result;
+  }
+
+  public static Result oSucc(Result result, Order order, String option) {
+    result.setCode(200);
+    result.setSuccess(true);
+    result.setData(order);
+    result.setMsg(option+"a order succ :) <3");
     return result;
   }
 

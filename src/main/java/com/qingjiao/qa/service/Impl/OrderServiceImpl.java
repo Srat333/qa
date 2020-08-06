@@ -24,54 +24,55 @@ public class OrderServiceImpl implements OrderService {
   @Resource
   private AnswerDao answerDao;
 
-  public boolean addOrder(Long qid,String url) {
+  public Result addOrder(Long qid,String url) {
     Date cur = new Date();
     Order order = new Order();
     order.setQid(qid);
     order.setOrder_time(cur);
-    int result = orderDao.addOrder(order);
-    if(result<0) {
+    int index = orderDao.addOrder(order);
+    if(index<0) {
       log.error("add order failure :(");
-      return false;
+      return ResultUtil.error(new Result());
     } else {
       log.info("add order succ :)");
-      return true;
+      return ResultUtil.oSucc(new Result(),order,"add");
     }
   }
 
-  public boolean payOrder(Long qid) {
+  public Result payOrder(Long qid) {
     if(orderDao.searchOrderByQid(qid)==null) {
       log.error("question is not existed");
-      return false;
+      return ResultUtil.empty(new Result());
     }
     Date cur = new Date();
     int result = orderDao.payOrder(qid,1,cur);
+    Order order = orderDao.searchOrderByQid(qid);
     if(result<0) {
       log.error("pay order failure :(");
-      return false;
+      return ResultUtil.error(new Result());
     } else {
       log.info("pay order succ :)");
-      return true;
+      return ResultUtil.oSucc(new Result(),order,"pay");
     }
   }
 
-  public boolean refund(Long qid) {
+  public Result refund(Long qid) {
     if(orderDao.searchOrderByQid(qid)==null) {
       log.error("question is not existed");
-      return false;
+      return ResultUtil.empty(new Result());
     }
     int result = orderDao.refundOrder(qid,1);
+    Order order = orderDao.searchOrderByQid(qid);
     if(result<0) {
       log.error("refund failure :(");
-      return false;
+      return ResultUtil.error(new Result());
     } else {
       log.info("refund succ :)");
-      return true;
+      return ResultUtil.oSucc(new Result(),order,"pay");
     }
   }
 
   public Result searchOrdersByUid(Long uid) {
-
     List<Order> orders = orderDao.searchOrdersByUid(uid);
     return ResultUtil.SearchSucc(new Result(),orders,"orders");
 

@@ -21,5 +21,7 @@ public interface AnswerService {
 
   Answer searchOneAnswer(Long aid);
 
+  Result searchAnswersByUid(Long uid);
+
 
 }

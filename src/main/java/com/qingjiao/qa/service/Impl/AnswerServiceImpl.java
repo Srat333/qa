@@ -2,6 +2,7 @@ package com.qingjiao.qa.service.Impl;
 
 import com.qingjiao.qa.dao.AnswerDao;
 import com.qingjiao.qa.entity.Answer;
+import com.qingjiao.qa.entity.Question;
 import com.qingjiao.qa.exception.Result;
 import com.qingjiao.qa.service.AnswerService;
 import com.qingjiao.qa.util.ResultUtil;
@@ -13,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 
 @Slf4j
@@ -57,9 +59,14 @@ public class AnswerServiceImpl implements AnswerService {
       log.error("re-answer is empty :(");
       return ResultUtil.empty(new Result());
     }
-    Answer answer = (Answer)redisTemplate.opsForValue().get("answer"+aid);
-    if(answer==null)
+    Answer answer = null;
+    String key = "answer"+aid;
+    if(redisTemplate.hasKey(key)) {
+      answer = (Answer)redisTemplate.opsForValue().get(key);
+      log.info(answer.toString());
+    } else {
       answer = searchOneAnswer(aid);
+    }
     answer.setAContent(content);
     int index = answerDao.updateAnswer(answer);
     redisTemplate.opsForValue().set("answer"+aid,answer);
@@ -146,5 +153,16 @@ public class AnswerServiceImpl implements AnswerService {
     }
     return answer;
   }
+
+  @Override
+  public Result searchAnswersByUid(Long uid) {
+      List<Answer> answers= answerDao.searchAnswersByUid(uid);
+      if(answers!=null) {
+        return ResultUtil.SearchSucc(new Result(),answers,"user's answer");
+      } else {
+        return ResultUtil.error(new Result());
+      }
+  }
+
 
 }

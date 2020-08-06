@@ -16,23 +16,18 @@ public class OrderController {
   private OrderService orderService;
 
   @RequestMapping(value = "/add",method = RequestMethod.POST)
-  public void addOrder(@RequestParam("qid") Long qid) {
-    orderService.addOrder(qid,"");
+  public Result addOrder(@RequestParam("qid") Long qid) {
+    return orderService.addOrder(qid,"");
   }
 
   @RequestMapping(value = "/pay",method = RequestMethod.POST)
-  public void payOrder(@RequestParam("qid") Long qid) {
-    orderService.payOrder(qid);
+  public Result payOrder(@RequestParam("qid") Long qid) {
+    return orderService.payOrder(qid);
   }
 
   @RequestMapping(value = "/refund",method = RequestMethod.POST)
-  public void refund(@RequestParam("qid") Long qid) {
-    orderService.refund(qid);
-  }
-
-  @RequestMapping(value = "/comment",method = RequestMethod.POST)
-  public void comment(@RequestParam("comment") String comment) {
-
+  public Result refund(@RequestParam("qid") Long qid) {
+    return orderService.refund(qid);
   }
 
   @RequestMapping(value = "/usr",method = RequestMethod.GET)

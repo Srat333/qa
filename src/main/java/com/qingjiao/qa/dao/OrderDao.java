@@ -25,9 +25,6 @@ public interface OrderDao {
   @Update("UPDATE orders SET refund=#{refund} WHERE qid = #{qid}")
   int refundOrder(Long qid, int refund);
 
-  @Update("UPDATE orders SET aid=#{aid} WHERE qid = #{qid}")
-  int comment(Long qid);
-
   @Select("SELECT * FROM orders WHERE qid = #{qid}")
   Order searchOrderByQid(Long qid);
 
@@ -36,7 +33,6 @@ public interface OrderDao {
 
   @Select("SELECT * FROM orders")
   List<Order> getAllOrder();
-
 
 
 

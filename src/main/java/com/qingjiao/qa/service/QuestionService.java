@@ -21,4 +21,6 @@ public interface QuestionService {
 
   List<Question> listAllQuestions();
 
+  Result searchQuestionsByUid(Long uid);
+
 }
