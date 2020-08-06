@@ -5,6 +5,8 @@ import com.qingjiao.qa.entity.Answer;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface AnswerDao {
@@ -32,6 +34,9 @@ public interface AnswerDao {
 
   @Delete("DELETE * FROM answers")
   int deleteAllAnswers();
+
+  @Select("SELECT * FROM answers WHERE uid=#{uid}")
+  List<Answer> searchAnswersByUid(Long uid);
 
 
 }

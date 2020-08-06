@@ -2,6 +2,7 @@ package com.qingjiao.qa.util;
 
 import com.qingjiao.qa.entity.Answer;
 import com.qingjiao.qa.entity.Question;
+import com.qingjiao.qa.exception.DefinitionException;
 import com.qingjiao.qa.exception.ErrorEnum;
 import com.qingjiao.qa.exception.Result;
 
@@ -13,7 +14,7 @@ public class ResultUtil<T> {
     result.setCode(500);
     result.setSuccess(false);
     result.setData(null);
-    result.setMsg("Internal Server Error");
+    result.setMsg("Internal Server Error :(");
     return result;
   }
 
@@ -41,12 +42,32 @@ public class ResultUtil<T> {
     return result;
   }
 
-  public static Result SearchQuestionSucc(Result result, List<Question> question) {
+  public static Result SearchSucc(Result result, List item,String options) {
     result.setCode(200);
     result.setSuccess(true);
-    result.setData(question);
-    result.setMsg("search questions succ :) <3");
+    result.setData(item);
+    result.setMsg("search "+options+"s succ :) <3");
     return result;
   }
+
+  public static Result defineError(DefinitionException de){
+    Result result = new Result();
+    result.setSuccess(false);
+    result.setCode(de.getErrorCode());
+    result.setMsg(de.getErrorMsg());
+    result.setData(null);
+    return result;
+  }
+
+
+  public static Result otherError(ErrorEnum errorEnum){
+    Result result = new Result();
+    result.setMsg(errorEnum.getErrorMsg());
+    result.setCode(errorEnum.getErrorCode());
+    result.setSuccess(false);
+    result.setData(null);
+    return result;
+  }
+
 
 }

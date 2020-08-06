@@ -35,6 +35,9 @@ public interface QuestionDao {
   @Delete("DELETE * FROM questions")
   int deleteAllQuestion();
 
+  @Select("SELECT * FROM questions WHERE uid=#{uid}")
+  List<Question> searchQuestionsByUid(Long uid);
+
 
 
 }

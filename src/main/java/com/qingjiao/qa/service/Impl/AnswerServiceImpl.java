@@ -2,11 +2,17 @@ package com.qingjiao.qa.service.Impl;
 
 import com.qingjiao.qa.dao.AnswerDao;
 import com.qingjiao.qa.entity.Answer;
+import com.qingjiao.qa.exception.Result;
 import com.qingjiao.qa.service.AnswerService;
+import com.qingjiao.qa.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import javax.annotation.Resource;
+import java.util.Date;
 
 
 @Slf4j
@@ -17,58 +23,99 @@ public class AnswerServiceImpl implements AnswerService {
   private AnswerDao answerDao;
 
 
+  @Autowired
+  private RedisTemplate redisTemplate;
+
+
   @Override
-  public boolean addAnswer(Answer answer) {
+  public Result addAnswer(Long qid, String aContent) {
+    if(aContent.equals("") || aContent==null) {
+      log.error("answer is empty :(");
+      return ResultUtil.empty(new Result());
+    }
+    Answer answer = new Answer();
+    answer.setAnswerUid(222L);
+    Date date = new Date();
+    answer.setAnswerTime(date);
+    answer.setAContent(aContent);
+    answer.setQid(qid);
+    redisTemplate.opsForValue().set("answer"+answer.getAid(),answer);
+    log.info("saved in redis answer"+" "+answer.getAid());
     int index = answerDao.addAnswer(answer);
-    if(index<0) {
-      log.error("add answer failure :(");
-      return false;
+    Result result = new Result();
+    if(index>0) {
+      return ResultUtil.succ(result,answer,"answer");
     } else {
-      log.info("add answer successfully :)");
-      return true;
+      return ResultUtil.error(result);
     }
   }
 
 
   @Override
-  public boolean updateAnswer(Answer a) {
-    int index = answerDao.updateAnswer(a);
-    if(index<0) {
-      log.error("update answer failure :(");
-      return false;
+  public Result updateAnswer(String content,Long aid) {
+    if(content.equals("") || content==null) {
+      log.error("re-answer is empty :(");
+      return ResultUtil.empty(new Result());
+    }
+    Answer answer = (Answer)redisTemplate.opsForValue().get("answer"+aid);
+    if(answer==null)
+      answer = searchOneAnswer(aid);
+    answer.setAContent(content);
+    int index = answerDao.updateAnswer(answer);
+    redisTemplate.opsForValue().set("answer"+aid,answer);
+    Result result = new Result();
+    if(index>0) {
+      return ResultUtil.succ(result,answer,"re-reply");
     } else {
-      log.info("update answer successfully :)");
-      return true;
+      return ResultUtil.error(result);
     }
 
   }
 
 
   @Override
-  public boolean comment(Answer answer) {
-
+  public Result comment(String comment,Long aid,double score) {
+    if(comment.equals("") || comment==null || score<0.0 || score>5.0) {
+      log.error("comment or score are none or out of scope");
+      return ResultUtil.empty(new Result());
+    }
+    Answer answer = (Answer)redisTemplate.opsForValue().get("answer"+aid);
+    if(answer==null)
+      answer = searchOneAnswer(aid);
+    if(answer==null)
+      return ResultUtil.empty(new Result());
+    answer.setComment(comment);
+    answer.setScore(score);
     int index = answerDao.comment(answer);
-    if(index<0) {
-      log.error("comment failure :(");
-      return false;
+    redisTemplate.opsForValue().set("answer"+answer.getAid(),answer);
+    Result result = new Result();
+    if(index>0) {
+      return ResultUtil.succ(result,answer,"comment");
     } else {
-      log.info("comment successfully :)");
-      return true;
+      return ResultUtil.error(result);
     }
 
   }
 
   @Override
-  public boolean deleteAnswer(Long aid) {
+  public Result deleteAnswer(Long aid) {
+
+    Answer answer = (Answer)redisTemplate.opsForValue().get("answer"+aid);
+    if(StringUtils.isEmpty(answer))
+      answer = searchOneAnswer(aid);
+    if(StringUtils.isEmpty(answer))
+      return ResultUtil.empty(new Result());
+    log.info(answer.toString());
 
     int index = answerDao.deleteAnswer(aid);
     //log.info(String.valueOf(result));
-    if(index<0) {
-      log.error("delete answer failure :(");
-      return false;
+    log.info(String.valueOf(index));
+    redisTemplate.delete("answer"+aid);
+    Result result = new Result();
+    if(index>0) {
+      return ResultUtil.succ(result,null,"delete");
     } else {
-      log.info("delete answer successfully :)");
-      return true;
+      return ResultUtil.error(result);
     }
   }
 

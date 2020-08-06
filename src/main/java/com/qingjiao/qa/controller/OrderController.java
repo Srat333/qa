@@ -1,13 +1,11 @@
 package com.qingjiao.qa.controller;
 
 
+import com.qingjiao.qa.exception.Result;
 import com.qingjiao.qa.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -30,6 +28,16 @@ public class OrderController {
   @RequestMapping(value = "/refund",method = RequestMethod.POST)
   public void refund(@RequestParam("qid") Long qid) {
     orderService.refund(qid);
+  }
+
+  @RequestMapping(value = "/comment",method = RequestMethod.POST)
+  public void comment(@RequestParam("comment") String comment) {
+
+  }
+
+  @RequestMapping(value = "/usr",method = RequestMethod.GET)
+  public Result searchOrdersByUid(@PathVariable("uid") Long uid) {
+    return orderService.searchOrdersByUid(uid);
   }
 
 

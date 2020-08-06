@@ -2,19 +2,20 @@ package com.qingjiao.qa.service;
 
 
 import com.qingjiao.qa.entity.Question;
+import com.qingjiao.qa.exception.Result;
 
 import java.util.List;
 
 
 public interface QuestionService {
 
-  boolean addQuestion(Question question);
+  Result addQuestion(String qContent, String tag, String qTitle, String category);
 
-  boolean updateQuestion(Question question);
+  Result updateQuestion(String qContent, Long qid, String qTitle);
 
-  boolean deleteQuestion(Long qid);
+  Result deleteQuestion(Long qid);
 
-  List<Question> searchQuestion(String keyword);
+  Result searchQuestions(String keyword);
 
   Question searchOneQuestion(Long qid);
 

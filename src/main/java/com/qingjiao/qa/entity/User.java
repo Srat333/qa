@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("user")
@@ -69,5 +70,11 @@ public class User {
      */
     @TableField("nick_name")
     private String nickName;
+
+    private List<Question> questions;
+
+    private List<Answer> answers;
+
+    private List<Order> orders;
 
 }

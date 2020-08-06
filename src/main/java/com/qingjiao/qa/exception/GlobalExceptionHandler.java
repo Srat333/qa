@@ -1,6 +1,7 @@
 package com.qingjiao.qa.exception;
 
 
+import com.qingjiao.qa.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,13 +22,13 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(value = DefinitionException.class)
   @ResponseBody
   public Result bizExceptionHandler(DefinitionException e) {
-    return Result.defineError(e);
+    return ResultUtil.defineError(e);
   }
 
   @ExceptionHandler(value = Exception.class)
   @ResponseBody
   public Result exceptionHandler(Exception e) {
-    return Result.otherError(ErrorEnum.INTERNAL_SERVER_ERROR);
+    return ResultUtil.otherError(ErrorEnum.INTERNAL_SERVER_ERROR);
   }
 
 }

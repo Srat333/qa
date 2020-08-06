@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Mapper
 @Repository
@@ -25,10 +26,16 @@ public interface OrderDao {
   int refundOrder(Long qid, int refund);
 
   @Update("UPDATE orders SET aid=#{aid} WHERE qid = #{qid}")
-  int answerOrder(Long aid,Long qid);
+  int comment(Long qid);
 
   @Select("SELECT * FROM orders WHERE qid = #{qid}")
   Order searchOrderByQid(Long qid);
+
+  @Select("SELECT * FROM orders WHERE uid =#{uid}")
+  List<Order> searchOrdersByUid(Long uid);
+
+  @Select("SELECT * FROM orders")
+  List<Order> getAllOrder();
 
 
 

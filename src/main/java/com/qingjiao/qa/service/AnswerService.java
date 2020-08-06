@@ -1,27 +1,21 @@
 package com.qingjiao.qa.service;
 
 
-import com.qingjiao.qa.dao.AnswerDao;
+
 import com.qingjiao.qa.entity.Answer;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Date;
-
-
+import com.qingjiao.qa.exception.Result;
 
 public interface AnswerService {
 
 
 
-  boolean addAnswer(Answer answer);
+  Result addAnswer(Long qid, String aContent);
 
-  boolean updateAnswer(Answer answer);
+  Result updateAnswer(String content, Long aid);
 
-  boolean comment(Answer answer);
+  Result comment(String comment, Long aid, double score);
 
-  boolean deleteAnswer(Long aid);
+  Result deleteAnswer(Long aid);
 
   Answer searchOneQuestion(Long qid);
 

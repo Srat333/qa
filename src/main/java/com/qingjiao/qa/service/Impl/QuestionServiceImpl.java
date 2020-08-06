@@ -3,10 +3,13 @@ package com.qingjiao.qa.service.Impl;
 
 import com.qingjiao.qa.dao.QuestionDao;
 import com.qingjiao.qa.entity.Question;
+import com.qingjiao.qa.exception.Result;
 import com.qingjiao.qa.service.QuestionService;
+import com.qingjiao.qa.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,41 +28,86 @@ public class QuestionServiceImpl implements QuestionService {
   @Autowired
   private ResourceLoader resourceLoader;
 
+  @Autowired
+  private RedisTemplate redisTemplate;
+
 
   @Override
-  public boolean addQuestion(Question question) {
+  public Result addQuestion(String qContent, String tag, String qTitle, String category) {
 
-    int result = questionDao.addQuestion(question);
-
-    if(result!=-1) {
-      log.info("ask a question successfully :) "+new Date()+" good luck <3");
-      return true;
+    if(qContent.equals("") || tag.equals("")) {
+      log.error("content empty");
+      return ResultUtil.empty(new Result());
+    }
+    Date curDate = new Date();
+    Question q = new Question();
+    // q.setQid(0L);
+    q.setQuestionUid(111L);
+    q.setQTitle(qTitle);
+    q.setQContent(qContent);
+    q.setCategory(category);
+    q.setTag(tag);
+    q.setPrice(0.99);
+    q.setCreateTime(curDate);
+    int index = questionDao.addQuestion(q);
+    redisTemplate.opsForValue().set("question"+q.getQid(),q);
+    Result result = new Result();
+    if(index>0) {
+      return ResultUtil.qSucc(result,q,"add");
     } else {
-      log.error("add failure :(");
-      return false;
+      return ResultUtil.error(result);
     }
 
   }
 
 
 
-  public boolean updateQuestion(Question question) {
-    int result = questionDao.updateQuestion(question);
-    if(result<0) {
-      log.error("update failure :(");
-      return false;
+  public Result updateQuestion(String qContent, Long qid, String qTitle) {
+    if(qContent.equals("")  || qid<=0 || qTitle.equals("")) {
+      log.error("content empty or qid invalid");
+      return ResultUtil.empty(new Result());
+    }
+    Question question = (Question) redisTemplate.opsForValue().get("question"+qid);
+    if(question==null) {
+      log.info("cannot find it in redis");
+      question = searchOneQuestion(qid);
+    }
+    if(question==null) {
+      return ResultUtil.empty(new Result());
+    }
+    question.setQTitle(qTitle);
+    question.setQContent(qContent);
+    redisTemplate.opsForValue().set("question"+qid,question);
+    int index = questionDao.updateQuestion(question);
+    Result result = new Result();
+    if(index>0) {
+      log.info("update succ :)");
+      return ResultUtil.qSucc(result,question,"update");
     } else {
-      log.info("update successfully :)");
-      return true;
+      log.error("update failed :(");
+      return ResultUtil.error(result);
     }
 
   }
 
-  public List<Question> searchQuestion(String keyword) {
+  public Result searchQuestions(String keyword) {
     if(keyword.equals("") || keyword==null) {
-      return new ArrayList<Question>();
+      return ResultUtil.empty(new Result());
     }
-    return questionDao.searchQuestions(keyword);
+    long size = redisTemplate.opsForList().size(keyword);
+    List<Question> questions = redisTemplate.opsForList().range(keyword,0,size);
+    if(questions==null) {
+      log.info("cannot find in redis");
+      questions = questionDao.searchQuestions(keyword);
+      redisTemplate.opsForList().leftPushAll(keyword,questions);
+    }
+    if(questions!=null) {
+      log.info("Found Something");
+      return ResultUtil.SearchSucc(new Result(),questions,"question");
+    } else {
+      log.info("No Similar Results");
+      return ResultUtil.error(new Result());
+    }
 
   }
 
@@ -71,14 +119,24 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
 
-  public boolean deleteQuestion(Long qid) {
-    int result = questionDao.deleteQuestion(qid);
-    if(result<0) {
-      log.error("delete failure :(");
-      return false;
+  public Result deleteQuestion(Long qid) {
+    Question question = (Question) redisTemplate.opsForValue().get("question"+qid);
+    if(question!=null)
+      redisTemplate.delete("question"+qid);
+    if(question==null) {
+      log.info("cannot find in redis");
+      question = searchOneQuestion(qid);
+    }
+    if(question==null)
+      return ResultUtil.empty(new Result());
+    //question= searchOneQuestion(qid);
+    int index = questionDao.deleteQuestion(qid);
+    if(index>0) {
+      log.info("delete succ :)");
+      return ResultUtil.qSucc(new Result(),question,"delete");
     } else {
-      log.info("delete successfully :)");
-      return true;
+      log.error("delete failed :(");
+      return ResultUtil.error(new Result());
     }
   }
 
