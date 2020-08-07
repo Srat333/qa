@@ -32,7 +32,7 @@ public class Answer implements Serializable {
 
   private Long qid;
 
-  private Long answerUid;
+  private String answerUid;
 
   private String aContent;
 

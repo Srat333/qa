@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 
   @Override
-  public Result addQuestion(String qContent, String tag, String qTitle, String category) {
+  public Result addQuestion(String qContent, String tag, String qTitle, String category,String uid) {
 
     if(qContent.equals("") || tag.equals("")) {
       log.error("content empty");
@@ -41,7 +42,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
     Date curDate = new Date();
     Question q = new Question();
-    q.setQuestionUid(111L);
+    q.setQuestionUid(uid);
     q.setQTitle(qTitle);
     q.setQContent(qContent);
     q.setCategory(category);
@@ -141,10 +142,45 @@ public class QuestionServiceImpl implements QuestionService {
 
   }
 
-  public Result searchQuestionsByUid(Long uid) {
+  public Result searchQuestionsByUid(String uid) {
     List<Question> questions= questionDao.searchQuestionsByUid(uid);
     if(questions!=null) {
       return ResultUtil.SearchSucc(new Result(),questions,"user's question");
+    } else {
+      return ResultUtil.error(new Result());
+    }
+  }
+
+  public Result searchAuditsByQid(Long qid) {
+    if(qid<0) {
+      return ResultUtil.empty(new Result());
+    }
+    Question q= questionDao.searchOneQuestion(qid);
+    String tmp = q.getAudits();
+    String[] audit = tmp.split(",");
+    List<String> audits = Arrays.asList(audit);
+    log.info("audits are "+audits);
+    if(q!=null) {
+      return ResultUtil.SearchSucc(new Result(),audits,"search audits");
+    } else {
+      return ResultUtil.error(new Result());
+    }
+  }
+
+  public  Result updateAuditsByQid(Long qid,String uid) {
+    if(qid<0) {
+      return ResultUtil.empty(new Result());
+    }
+    Question q = questionDao.searchOneQuestion(qid);
+    String audits = q.getAudits();
+    if(audits==null) {
+      audits=uid+",";
+    } else
+      audits+=uid+",";
+    log.info("update audits "+audits);
+    int index = questionDao.updateAudits(qid,audits);
+    if(index>0) {
+      return ResultUtil.SearchSucc(new Result(),Arrays.asList(audits.split(",")),"update audits");
     } else {
       return ResultUtil.error(new Result());
     }

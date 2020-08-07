@@ -72,8 +72,8 @@ public class OrderServiceImpl implements OrderService {
     }
   }
 
-  public Result searchOrdersByUid(Long uid) {
-    List<Order> orders = orderDao.searchOrdersByUid(uid);
+  public Result searchOrdersByQid(Long qid) {
+    List<Order> orders = orderDao.searchOrdersByQid(qid);
     return ResultUtil.SearchSucc(new Result(),orders,"orders");
 
   }

@@ -71,10 +71,4 @@ public class User {
     @TableField("nick_name")
     private String nickName;
 
-    private List<Question> questions;
-
-    private List<Answer> answers;
-
-    private List<Order> orders;
-
 }

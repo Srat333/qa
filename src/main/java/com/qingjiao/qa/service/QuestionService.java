@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface QuestionService {
 
-  Result addQuestion(String qContent, String tag, String qTitle, String category);
+  Result addQuestion(String qContent, String tag, String qTitle, String category,String uid);
 
   Result updateQuestion(String qContent, Long qid, String qTitle);
 
@@ -21,6 +21,10 @@ public interface QuestionService {
 
   List<Question> listAllQuestions();
 
-  Result searchQuestionsByUid(Long uid);
+  Result searchQuestionsByUid(String uid);
+
+  Result searchAuditsByQid(Long qid);
+
+  Result updateAuditsByQid(Long qid,String uid);
 
 }

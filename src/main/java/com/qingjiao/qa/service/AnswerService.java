@@ -9,7 +9,7 @@ public interface AnswerService {
 
 
 
-  Result addAnswer(Long qid, String aContent);
+  Result addAnswer(Long qid, String aContent,String uid);
 
   Result updateAnswer(String content, Long aid);
 
@@ -21,7 +21,7 @@ public interface AnswerService {
 
   Answer searchOneAnswer(Long aid);
 
-  Result searchAnswersByUid(Long uid);
+  Result searchAnswersByUid(String uid);
 
 
 }

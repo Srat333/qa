@@ -31,8 +31,8 @@ public class OrderController {
   }
 
   @RequestMapping(value = "/usr",method = RequestMethod.GET)
-  public Result searchOrdersByUid(@PathVariable("uid") Long uid) {
-    return orderService.searchOrdersByUid(uid);
+  public Result searchOrdersByQid(@RequestParam("qid") Long qid) {
+    return orderService.searchOrdersByQid(qid);
   }
 
 

@@ -5,10 +5,7 @@ import com.qingjiao.qa.exception.Result;
 import com.qingjiao.qa.service.AnswerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
@@ -22,8 +19,9 @@ public class AnswerController {
 
   @RequestMapping(value = {"/reply"},method = RequestMethod.POST)
   public Result addAnswer(@RequestParam("qid") Long qid,
-                          @RequestParam("content") String aContent) {
-    return answerService.addAnswer(qid,aContent);
+                          @RequestParam("content") String aContent,
+                          @RequestParam("uid") String uid) {
+    return answerService.addAnswer(qid,aContent,uid);
   }
 
   @RequestMapping(value = {"/re-reply"}, method = RequestMethod.POST)
@@ -47,7 +45,10 @@ public class AnswerController {
 
   }
 
-
+  @RequestMapping(value = {"/user_a"},method = RequestMethod.GET)
+  public Result searchAnswersByUid(@RequestParam("uid") String uid) {
+    return answerService.searchAnswersByUid(uid);
+  }
 
 
 }

@@ -30,8 +30,9 @@ public class QuestionController {
   public Result addQuestion(@RequestParam("title") String qTitle,
                             @RequestParam("content") String qContent,
                             @RequestParam("category") String category,
-                            @RequestParam("tag") String tag) {
-    return questionService.addQuestion(qContent,tag,qTitle,category);
+                            @RequestParam("tag") String tag,
+                            @RequestParam("uid") String uid) {
+    return questionService.addQuestion(qContent,tag,qTitle,category,uid);
   }
 
 
@@ -64,8 +65,8 @@ public class QuestionController {
     }
   }
 
-  @RequestMapping(value={"/usr"},method = RequestMethod.GET)
-  public Result searchQuestionsByUid(@PathVariable("uid") Long uid) {
+  @RequestMapping(value={"/user_q"},method = RequestMethod.GET)
+  public Result searchQuestionsByUid(@RequestParam("uid") String uid) {
     return questionService.searchQuestionsByUid(uid);
   }
 
@@ -80,6 +81,16 @@ public class QuestionController {
     }
   }
 
+  @RequestMapping(value = {"/searchAudits"},method = RequestMethod.POST)
+  public Result searchAuditsByQid(@RequestParam("qid") Long qid) {
+    return questionService.searchAuditsByQid(qid);
+  }
+
+  @RequestMapping(value = {"/updateAudits"},method = RequestMethod.POST)
+  public Result updateAuditsByQid(@RequestParam("qid") Long qid,
+                                  @RequestParam("uid") String uid) {
+    return questionService.updateAuditsByQid(qid,uid);
+  }
 
 
 }

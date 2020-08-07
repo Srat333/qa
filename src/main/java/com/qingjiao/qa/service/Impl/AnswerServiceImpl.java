@@ -30,13 +30,13 @@ public class AnswerServiceImpl implements AnswerService {
 
 
   @Override
-  public Result addAnswer(Long qid, String aContent) {
-    if(aContent.equals("") || aContent==null) {
+  public Result addAnswer(Long qid, String aContent,String uid) {
+    if(aContent.equals("") || aContent==null || uid==null) {
       log.error("answer is empty :(");
       return ResultUtil.empty(new Result());
     }
     Answer answer = new Answer();
-    answer.setAnswerUid(222L);
+    answer.setAnswerUid(uid);
     Date date = new Date();
     answer.setAnswerTime(date);
     answer.setAContent(aContent);
@@ -155,7 +155,7 @@ public class AnswerServiceImpl implements AnswerService {
   }
 
   @Override
-  public Result searchAnswersByUid(Long uid) {
+  public Result searchAnswersByUid(String uid) {
       List<Answer> answers= answerDao.searchAnswersByUid(uid);
       if(answers!=null) {
         return ResultUtil.SearchSucc(new Result(),answers,"user's answer");

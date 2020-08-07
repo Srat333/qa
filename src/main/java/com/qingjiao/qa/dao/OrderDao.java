@@ -28,8 +28,8 @@ public interface OrderDao {
   @Select("SELECT * FROM orders WHERE qid = #{qid}")
   Order searchOrderByQid(Long qid);
 
-  @Select("SELECT * FROM orders WHERE uid =#{uid}")
-  List<Order> searchOrdersByUid(Long uid);
+  @Select("SELECT * FROM orders WHERE qid =#{qid}")
+  List<Order> searchOrdersByQid(Long qid);
 
   @Select("SELECT * FROM orders")
   List<Order> getAllOrder();

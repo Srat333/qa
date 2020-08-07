@@ -12,8 +12,8 @@ public interface QuestionDao {
 
 
   @Insert("INSERT INTO questions(question_uid,q_title,q_content,create_time,pid,category," +
-          "tag, price) VALUES(#{questionUid},#{qTitle},#{qContent},#{createTime},#{pid},#{category}," +
-          "#{tag},#{price})")
+          "tag, price,audits) VALUES(#{questionUid},#{qTitle},#{qContent},#{createTime},#{pid},#{category}," +
+          "#{tag},#{price},#{audits})")
   @Options(useGeneratedKeys = true,keyProperty = "qid",keyColumn = "qid")
   int addQuestion(Question q);
 
@@ -35,8 +35,14 @@ public interface QuestionDao {
   @Delete("DELETE * FROM questions")
   int deleteAllQuestion();
 
-  @Select("SELECT * FROM questions WHERE uid=#{uid}")
-  List<Question> searchQuestionsByUid(Long uid);
+  @Select("SELECT * FROM questions WHERE question_uid=#{uid}")
+  List<Question> searchQuestionsByUid(String uid);
+
+
+  @Update("UPDATE questions SET audits=#{audits} where qid=#{qid}")
+  int updateAudits(Long qid,String audits);
+
+
 
 
 

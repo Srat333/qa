@@ -16,6 +16,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 @Setter
@@ -26,7 +27,7 @@ public class Question implements Serializable {
 
   private Long qid;
 
-  private Long questionUid;
+  private String questionUid;
 
   private String qTitle;
 
@@ -42,6 +43,8 @@ public class Question implements Serializable {
   private String tag;
 
   private double price;
+
+  private String audits;
 
 
 

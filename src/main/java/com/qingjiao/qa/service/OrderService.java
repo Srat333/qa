@@ -14,7 +14,7 @@ public interface OrderService {
 
   Result refund(Long qid);
 
-  public Result searchOrdersByUid(Long uid);
+  public Result searchOrdersByQid(Long qid);
 
 
 

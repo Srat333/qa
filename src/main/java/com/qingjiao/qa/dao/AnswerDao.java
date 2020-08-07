@@ -35,8 +35,8 @@ public interface AnswerDao {
   @Delete("DELETE * FROM answers")
   int deleteAllAnswers();
 
-  @Select("SELECT * FROM answers WHERE uid=#{uid}")
-  List<Answer> searchAnswersByUid(Long uid);
+  @Select("SELECT * FROM answers WHERE answer_uid=#{uid}")
+  List<Answer> searchAnswersByUid(String uid);
 
 
 }
