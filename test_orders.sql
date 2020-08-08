@@ -16,35 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `questions`
+-- Table structure for table `orders`
 --
 
-DROP TABLE IF EXISTS `questions`;
+DROP TABLE IF EXISTS `orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
-CREATE TABLE `questions` (
-  `qid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `question_uid` varchar(45) DEFAULT NULL,
-  `q_content` longtext,
-  `create_time` datetime DEFAULT NULL,
-  `tag` varchar(45) DEFAULT NULL,
-  `price` double DEFAULT NULL,
-  `q_title` varchar(45) DEFAULT NULL,
-  `pid` varchar(45) DEFAULT NULL,
-  `category` varchar(45) DEFAULT NULL,
-  `audits` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`qid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `orders` (
+  `oid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `qid` bigint(20) DEFAULT NULL,
+  `aid` bigint(20) DEFAULT NULL,
+  `url` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_paid` int(11) DEFAULT NULL,
+  `is_answered` int(11) DEFAULT NULL,
+  `is_commented` int(11) DEFAULT NULL,
+  `order_time` datetime DEFAULT NULL,
+  `paid_time` datetime DEFAULT NULL,
+  `refund` int(11) DEFAULT NULL,
+  PRIMARY KEY (`oid`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `questions`
+-- Dumping data for table `orders`
 --
 
-LOCK TABLES `questions` WRITE;
-/*!40000 ALTER TABLE `questions` DISABLE KEYS */;
-INSERT INTO `questions` VALUES (1,'111','test-101','2020-08-06 15:39:35','test-101',0.99,'testing-updated-101',NULL,'test-101',NULL),(2,'testuser','question-102-updated','2020-08-07 12:26:32','test-102',0.99,'testing-102-updated',NULL,'test-102','nulltestuser2,'),(3,'testuser3','question-103-updated','2020-08-07 12:39:14','test-103',0.99,'testing-103-updated',NULL,'test-103','testuser2,testuser1,');
-/*!40000 ALTER TABLE `questions` ENABLE KEYS */;
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (1,1,NULL,NULL,1,0,0,'2020-08-06 15:46:09','2020-08-06 16:10:09',1),(2,12,NULL,NULL,0,0,0,'2020-08-06 16:03:42',NULL,0),(3,12,NULL,NULL,0,0,0,'2020-08-06 16:09:27',NULL,0),(4,3,NULL,NULL,1,0,0,'2020-08-07 13:05:06','2020-08-07 13:06:50',0);
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

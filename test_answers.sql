@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `answers`;
 CREATE TABLE `answers` (
   `aid` bigint(20) NOT NULL AUTO_INCREMENT,
   `qid` bigint(20) DEFAULT NULL,
-  `answer_uid` bigint(20) DEFAULT NULL,
+  `answer_uid` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `a_content` longtext COLLATE utf8mb4_unicode_ci,
   `pid` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `answer_time` datetime DEFAULT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE `answers` (
 
 LOCK TABLES `answers` WRITE;
 /*!40000 ALTER TABLE `answers` DISABLE KEYS */;
-INSERT INTO `answers` VALUES (1,8,222,'♿️♿️♿️♿️♿️♿️♿️♿️♿️',NULL,'2020-07-04 17:08:02',4.4,'回答都非常好'),(2,9,222,'?????????????',NULL,'2020-07-04 18:24:41',4,'very good');
+INSERT INTO `answers` VALUES (1,1,'222','answer-test-update-101',NULL,'2020-08-06 15:44:38',4.4,'very good'),(2,3,'testuser1','question-103-updated-answered',NULL,'2020-08-07 12:42:59',NULL,NULL);
 /*!40000 ALTER TABLE `answers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-04 18:55:35
+-- Dump completed on 2020-08-07 22:12:31
