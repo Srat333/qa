@@ -1,6 +1,7 @@
 package com.qingjiao.qa.service.Impl;
 
 import com.qingjiao.qa.dao.AnswerDao;
+import com.qingjiao.qa.dao.QuestionDao;
 import com.qingjiao.qa.entity.Answer;
 import com.qingjiao.qa.entity.Question;
 import com.qingjiao.qa.exception.Result;
@@ -21,12 +22,15 @@ import java.util.List;
 @Service
 public class AnswerServiceImpl implements AnswerService {
 
-  @Autowired
+  @Resource
   private AnswerDao answerDao;
 
 
-  @Autowired
+  @Resource
   private RedisTemplate redisTemplate;
+
+  @Autowired
+  private QuestionDao questionDao;
 
 
   @Override
@@ -44,8 +48,12 @@ public class AnswerServiceImpl implements AnswerService {
     redisTemplate.opsForValue().set("answer"+answer.getAid(),answer);
     log.info("saved in redis answer"+" "+answer.getAid());
     int index = answerDao.addAnswer(answer);
+    Question q = questionDao.searchOneQuestion(qid);
+    q.setIsAnswered(1);
+    int index2 = questionDao.answerQuestion(q);
+    log.info(q.toString());
     Result result = new Result();
-    if(index>0) {
+    if(index>0 && index2>0) {
       return ResultUtil.succ(result,answer,"answer");
     } else {
       return ResultUtil.error(result);
@@ -59,7 +67,7 @@ public class AnswerServiceImpl implements AnswerService {
       log.error("re-answer is empty :(");
       return ResultUtil.empty(new Result());
     }
-    Answer answer = null;
+    Answer answer;
     String key = "answer"+aid;
     if(redisTemplate.hasKey(key)) {
       answer = (Answer)redisTemplate.opsForValue().get(key);
@@ -91,12 +99,16 @@ public class AnswerServiceImpl implements AnswerService {
       answer = searchOneAnswer(aid);
     if(answer==null)
       return ResultUtil.empty(new Result());
+    Long qid = answer.getQid();
     answer.setComment(comment);
     answer.setScore(score);
+    Question q = questionDao.searchOneQuestion(qid);
+    q.setIsCommented(1);
+    int index2 = questionDao.commentAnswer(q);
     int index = answerDao.comment(answer);
     redisTemplate.opsForValue().set("answer"+answer.getAid(),answer);
     Result result = new Result();
-    if(index>0) {
+    if(index>0 && index2>0) {
       return ResultUtil.succ(result,answer,"comment");
     } else {
       return ResultUtil.error(result);

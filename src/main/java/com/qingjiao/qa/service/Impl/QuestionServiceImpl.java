@@ -26,10 +26,10 @@ public class QuestionServiceImpl implements QuestionService {
   @Resource
   private QuestionDao questionDao;
 
-  @Autowired
+  @Resource
   private ResourceLoader resourceLoader;
 
-  @Autowired
+  @Resource
   private RedisTemplate redisTemplate;
 
 
@@ -49,6 +49,8 @@ public class QuestionServiceImpl implements QuestionService {
     q.setTag(tag);
     q.setPrice(0.99);
     q.setCreateTime(curDate);
+    q.setIsAnswered(0);
+    q.setIsCommented(0);
     int index = questionDao.addQuestion(q);
     redisTemplate.opsForValue().set("question"+q.getQid(),q);
     Result result = new Result();
@@ -72,7 +74,7 @@ public class QuestionServiceImpl implements QuestionService {
     Question question = (Question) redisTemplate.opsForValue().get("question"+qid);
     if(question==null) {
       log.info("cannot find it in redis");
-      question = searchOneQuestion(qid);
+      question = questionDao.searchOneQuestion(qid);
     }
     if(question==null) {
       return ResultUtil.empty(new Result());
@@ -107,11 +109,12 @@ public class QuestionServiceImpl implements QuestionService {
 
   }
 
-  public Question searchOneQuestion(Long qid) {
+  public Result searchOneQuestion(Long qid) {
     if(qid<=0) {
       return null;
     }
-    return questionDao.searchOneQuestion(qid);
+    Question question = questionDao.searchOneQuestion(qid);
+    return ResultUtil.qSucc(new Result(),question,"search");
   }
 
 
@@ -121,7 +124,7 @@ public class QuestionServiceImpl implements QuestionService {
       redisTemplate.delete("question"+qid);
     if(question==null) {
       log.info("cannot find in redis");
-      question = searchOneQuestion(qid);
+      question = questionDao.searchOneQuestion(qid);
     }
     if(question==null)
       return ResultUtil.empty(new Result());
@@ -137,8 +140,8 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
 
-  public List<Question> listAllQuestions() {
-    return questionDao.listAllQuestion();
+  public Result listAllQuestions() {
+    return ResultUtil.SearchSucc(new Result(),questionDao.listAllQuestion(),"question");
 
   }
 

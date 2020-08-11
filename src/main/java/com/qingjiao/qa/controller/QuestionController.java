@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
 @RequestMapping("/qa")
 public class QuestionController {
 
-  @Autowired
+  @Resource
   private QuestionService questionService;
 
   @RequestMapping(value={"/add"},method = RequestMethod.POST)
@@ -54,8 +55,8 @@ public class QuestionController {
   }
 
   @RequestMapping(value={"/all"},method = RequestMethod.GET)
-  public List<Question> listAllQuestions() {
-    List<Question> result = questionService.listAllQuestions();
+  public Result listAllQuestions() {
+    Result result = questionService.listAllQuestions();
     if(result!=null) {
       log.info("list all successfully!!!!");
       return result;

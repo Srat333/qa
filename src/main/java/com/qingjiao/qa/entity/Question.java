@@ -46,6 +46,10 @@ public class Question implements Serializable {
 
   private String audits;
 
+  private int isAnswered;
+
+  private int isCommented;
+
 
 
 }

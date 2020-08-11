@@ -17,9 +17,9 @@ public interface QuestionService {
 
   Result searchQuestions(String keyword);
 
-  Question searchOneQuestion(Long qid);
+  Result searchOneQuestion(Long qid);
 
-  List<Question> listAllQuestions();
+  Result listAllQuestions();
 
   Result searchQuestionsByUid(String uid);
 
